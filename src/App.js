@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext, useEffect } from "react";
+import { GlobalStyle } from "./styles/GlobalStyle";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Login } from "./pages/Login";
+import { Singup } from "./pages/Singup";
+import { Home } from "./pages/Home";
+import { ThemeProvider } from "styled-components";
+import Theme from "./styles/theme";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { AuthContext } from "./context/AuthContext";
 
-function App() {
+const App = () => {
+  const { currentUser } = useContext(AuthContext);
+  useEffect(() => {
+    console.log("currentUser: ", currentUser);
+  }, [currentUser]);
+
+  const ProtectedRoute = ({ children }) => {
+    if (currentUser || undefined || null) {
+      <Navigate to={"/"} />;
+    }
+    return children;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ThemeProvider theme={Theme}>
+        <GlobalStyle />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Singup />} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+      <ToastContainer />
+    </>
   );
-}
+};
 
 export default App;
