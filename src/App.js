@@ -1,6 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { GlobalStyle } from "./styles/GlobalStyle";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 import { Login } from "./pages/Login";
 import { Singup } from "./pages/Singup";
 import { Home } from "./pages/Home";
@@ -17,9 +23,16 @@ const App = () => {
   }, [currentUser]);
 
   const ProtectedRoute = ({ children }) => {
-    if (currentUser || undefined || null) {
-      <Navigate to={"/"} />;
-    }
+    const getLocalValue = localStorage.getItem("isLogedIn") === "true";
+    console.log("getLocalValue: ", getLocalValue);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (!getLocalValue) {
+        navigate("/");
+      }
+    }, [getLocalValue, navigate]);
+
     return children;
   };
 
@@ -29,8 +42,8 @@ const App = () => {
         <GlobalStyle />
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Singup />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/singUp" element={<Singup />} />
             <Route
               path="/home"
               element={

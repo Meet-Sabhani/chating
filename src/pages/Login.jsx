@@ -17,6 +17,8 @@ export const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/home");
+      toast.success("login succufully");
+      localStorage.setItem("isLogedIn", true);
     } catch (err) {
       console.log("err: ", err);
       toast.error(err.message);
